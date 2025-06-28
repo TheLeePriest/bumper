@@ -1,5 +1,5 @@
 {
-  "name": "bumper",
+  "name": "bumper-cli",
   "version": "1.0.0",
   "description": "🚀 A magical release management system with beautiful changelogs and automated workflows",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsc && esbuild src/cli.ts --bundle --platform=node --format=cjs --outfile=dist/cli.js --external:commander",
     "dev": "ts-node src/cli.ts",
-    "test": "vitest",
+    "test": "vitest --run",
     "lint": "biome lint src/",
     "format": "biome format --write src/",
     "preview": "ts-node src/changelogGenerator.ts --preview",
