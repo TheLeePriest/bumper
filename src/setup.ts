@@ -27,38 +27,39 @@ function installPackage(packageName: string, dev = false): void {
 
 // Create commitlint configuration
 function createCommitlintConfig(): void {
-  const config = {
-    extends: ['@commitlint/config-conventional'],
-    rules: {
-      'type-enum': [
-        2,
-        'always',
-        [
-          'feat',
-          'fix',
-          'docs',
-          'style',
-          'refactor',
-          'perf',
-          'test',
-          'build',
-          'ci',
-          'chore',
-          'revert',
-          'security',
-        ],
+  const config = `module.exports = {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'type-enum': [
+      2,
+      'always',
+      [
+        'feat',
+        'fix',
+        'docs',
+        'style',
+        'refactor',
+        'perf',
+        'test',
+        'build',
+        'ci',
+        'chore',
+        'revert',
+        'security',
       ],
-      'type-case': [2, 'always', 'lower'],
-      'type-empty': [2, 'never'],
-      'subject-case': [2, 'always', 'lower'],
-      'subject-empty': [2, 'never'],
-      'subject-full-stop': [2, 'never', '.'],
-      'header-max-length': [2, 'always', 72],
-    },
-  };
+    ],
+    'type-case': [2, 'always', 'lower'],
+    'type-empty': [2, 'never'],
+    'subject-case': [2, 'always', 'lower'],
+    'subject-empty': [2, 'never'],
+    'subject-full-stop': [2, 'never', '.'],
+    'header-max-length': [2, 'always', 72],
+  },
+};
+`;
 
-  // Write as a proper JSON file
-  fs.writeFileSync('commitlint.config.json', `${JSON.stringify(config, null, 2)}\n`);
+  // Write as a JavaScript file
+  fs.writeFileSync('commitlint.config.js', config);
 }
 
 // Create GitHub Actions workflow
@@ -219,7 +220,7 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   console.log(chalk.blue('🔧 Setting up bumper for your project...'));
 
   // Check if already set up
-  if (!force && (fileExists('commitlint.config.json') || fileExists('.husky'))) {
+  if (!force && (fileExists('commitlint.config.js') || fileExists('.husky'))) {
     console.log(chalk.yellow('⚠️ Project appears to already be set up.'));
     const { overwrite } = await inquirer.prompt([
       {
