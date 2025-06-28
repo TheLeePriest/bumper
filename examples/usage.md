@@ -7,13 +7,15 @@ Bumper is a magical release management system for Node.js projects. Here's how t
 ## 🚀 Installation
 
 ### Option 1: Global (for CLI everywhere)
+
 ```bash
-npm install -g bumper
+npm install -g bumper-cli
 ```
 
 ### Option 2: Per-Project (Recommended)
+
 ```bash
-npm install --save-dev bumper
+npm install --save-dev bumper-cli
 ```
 
 ---
@@ -21,11 +23,13 @@ npm install --save-dev bumper
 ## ⚡ Setup
 
 ### Global
+
 ```bash
 bumper setup
 ```
 
 ### Per-Project
+
 ```bash
 npx bumper setup
 # or, after setup:
@@ -47,21 +51,25 @@ npm run bumper <subcommand> [options]
 ### Common Examples
 
 #### Preview Next Release
+
 ```bash
 npm run bumper preview
 ```
 
 #### Validate Commits
+
 ```bash
 npm run bumper validate
 ```
 
 #### Generate Changelog
+
 ```bash
 npm run bumper generate
 ```
 
 #### Create a Release
+
 ```bash
 npm run bumper release patch
 npm run bumper release minor
@@ -70,6 +78,7 @@ npm run bumper release patch --dry-run
 ```
 
 #### Setup (if not already set up)
+
 ```bash
 npm run bumper setup
 ```
@@ -81,6 +90,7 @@ npm run bumper setup
 ## 📝 Global Usage (Alternative)
 
 If installed globally, you can use:
+
 ```bash
 bumper preview
 bumper validate
@@ -94,6 +104,7 @@ bumper release patch
 Bumper enforces the [Conventional Commits](https://conventionalcommits.org/) specification for consistent commit messages and automatic changelog generation.
 
 ### Commit Format
+
 ```
 <type>[optional scope]: <description>
 
@@ -321,6 +332,7 @@ npm run bumper release patch --dry-run
 ```
 
 Output:
+
 ```
 🚀 Starting DRY RUN release process...
 📦 Version: 1.0.0 → 1.0.1
@@ -392,6 +404,7 @@ Automatically creates `.github/workflows/release.yml` for automated releases tri
 ## 💡 Best Practices
 
 ### Commit Messages
+
 - **Use conventional format**: `type(scope): description`
 - **Keep it concise**: Subject under 72 characters
 - **Be descriptive**: Clear, meaningful descriptions
@@ -399,12 +412,14 @@ Automatically creates `.github/workflows/release.yml` for automated releases tri
 - **Mark breaking changes**: Use `!` for breaking changes
 
 ### Release Workflow
+
 - **Preview first**: Always run `npm run bumper preview`
 - **Use dry runs**: Test with `--dry-run` before actual release
 - **Validate commits**: Run validation before releasing
 - **Review changelog**: Check generated changelog looks correct
 
 ### Team Workflow
+
 - **Use per-project installation**: For version control and consistency
 - **Set up git hooks**: Automatic validation on every commit
 - **Document process**: Share setup instructions with team
@@ -417,16 +432,20 @@ Automatically creates `.github/workflows/release.yml` for automated releases tri
 ### Common Issues
 
 **Command not found?**
+
 - Make sure Bumper is installed locally or globally
 - Use `npm run bumper <subcommand>` for per-project
 
 **Script not found?**
+
 - Run `npx bumper setup` to add scripts
 
 **Permission denied?**
+
 - Use `npm run bumper ...` instead of direct execution
 
 **Commit validation fails?**
+
 ```bash
 # Check commit format
 npm run bumper validate
@@ -436,6 +455,7 @@ git commit --amend -m "feat: add new feature"
 ```
 
 **Release fails?**
+
 ```bash
 # Check git status
 git status
@@ -448,6 +468,7 @@ npm run bumper release patch --dry-run
 ```
 
 **GitHub release fails?**
+
 - Ensure `GITHUB_TOKEN` secret is set in repository
 - Check that GitHub CLI is available in workflow
 - Verify repository permissions
@@ -472,4 +493,4 @@ npm run bumper release patch --dry-run
 - [Husky](https://typicode.github.io/husky/) - Git hooks
 - [Commitlint](https://commitlint.js.org/) - Commit validation
 
-For more, see the main [README](../README.md). 
+For more, see the main [README](../README.md).
