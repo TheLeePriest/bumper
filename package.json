@@ -1,0 +1,83 @@
+{
+  "name": "bumper",
+  "version": "1.0.0",
+  "description": "🚀 A magical release management system with beautiful changelogs and automated workflows",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "bumper": "dist/cli.js",
+    "bump": "dist/cli.js"
+  },
+  "files": [
+    "dist/**/*",
+    "templates/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && esbuild src/cli.ts --bundle --platform=node --format=cjs --outfile=dist/cli.js --external:commander",
+    "dev": "ts-node src/cli.ts",
+    "test": "vitest",
+    "lint": "biome lint src/",
+    "format": "biome format --write src/",
+    "preview": "ts-node src/changelogGenerator.ts --preview",
+    "generate": "ts-node src/changelogGenerator.ts",
+    "validate": "ts-node src/validateCommits.ts",
+    "release:patch": "ts-node src/releaseTasks.ts patch",
+    "release:minor": "ts-node src/releaseTasks.ts minor",
+    "release:major": "ts-node src/releaseTasks.ts major",
+    "release:dry-run": "ts-node src/releaseTasks.ts --dry-run",
+    "setup": "ts-node src/setup.ts",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build && npm run test"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.0",
+    "ora": "^7.0.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.0",
+    "@types/inquirer": "^9.0.8",
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.19.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "keywords": [
+    "release",
+    "changelog",
+    "conventional-commits",
+    "semantic-versioning",
+    "github-actions",
+    "npm-publish",
+    "automation",
+    "git-hooks",
+    "commitlint",
+    "cli",
+    "versioning",
+    "deployment",
+    "bumper"
+  ],
+  "author": "Bumper Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/bumper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/bumper/issues"
+  },
+  "homepage": "https://github.com/your-username/bumper#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
