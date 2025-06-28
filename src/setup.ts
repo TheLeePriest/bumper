@@ -57,6 +57,7 @@ function createCommitlintConfig(): void {
     },
   };
 
+  // Write as a proper JSON file
   fs.writeFileSync('commitlint.config.json', `${JSON.stringify(config, null, 2)}\n`);
 }
 
@@ -155,21 +156,15 @@ function createHuskyHooks(): void {
   const huskyDir = '.husky';
   ensureDir(huskyDir);
 
-  // Create commit-msg hook
-  const commitMsgHook = `#!/usr/bin/env sh
-. "\$(dirname -- "\$0")/_/husky.sh"
-
-npx --no -- commitlint --edit \$1
+  // Create commit-msg hook (modern syntax)
+  const commitMsgHook = `npx --no -- commitlint --edit \$1
 `;
 
   fs.writeFileSync(path.join(huskyDir, 'commit-msg'), commitMsgHook);
   fs.chmodSync(path.join(huskyDir, 'commit-msg'), '755');
 
-  // Create pre-push hook
-  const prePushHook = `#!/usr/bin/env sh
-. "\$(dirname -- "\$0")/_/husky.sh"
-
-npm run test
+  // Create pre-push hook (modern syntax)
+  const prePushHook = `npm run test
 `;
 
   fs.writeFileSync(path.join(huskyDir, 'pre-push'), prePushHook);
