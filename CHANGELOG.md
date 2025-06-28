@@ -31,3 +31,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.1.1] - 2025-06-28 (PATCH RELEASE)
+
+### 📚 Documentation
+
+- completely rewrite usage documentation for clarity (650ab62d)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
