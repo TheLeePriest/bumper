@@ -23,13 +23,16 @@
     "preview": "ts-node src/changelogGenerator.ts --preview",
     "generate": "ts-node src/changelogGenerator.ts",
     "validate": "ts-node src/validateCommits.ts",
-    "release:patch": "ts-node src/releaseTasks.ts patch",
-    "release:minor": "ts-node src/releaseTasks.ts minor",
-    "release:major": "ts-node src/releaseTasks.ts major",
-    "release:dry-run": "ts-node src/releaseTasks.ts --dry-run",
+    "release:patch": "./node_modules/.bin/bumper release patch",
+    "release:minor": "./node_modules/.bin/bumper release minor",
+    "release:major": "./node_modules/.bin/bumper release major",
+    "release:dry-run": "./node_modules/.bin/bumper release patch --dry-run",
     "setup": "ts-node src/setup.ts",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run build && npm run test"
+    "prepare": "husky install",
+    "prepublishOnly": "npm run build && npm run test",
+    "validate:commits": "./node_modules/.bin/bumper validate",
+    "changelog:preview": "./node_modules/.bin/bumper preview",
+    "changelog:generate": "./node_modules/.bin/bumper generate"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -40,9 +43,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/inquirer": "^9.0.8",
     "@types/node": "^20.0.0",
+    "bumper-cli": "^1.0.0",
     "esbuild": "^0.19.0",
+    "husky": "^9.1.7",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
