@@ -24,13 +24,15 @@ Bumper is a modern, developer-friendly tool that automates your entire release p
 ### Installation Options
 
 #### Global Installation (Recommended for CLI usage)
+
 ```bash
-npm install -g bumper
+npm install -g bumper-cli
 ```
 
 #### Per-Project Installation (Recommended for project-specific usage)
+
 ```bash
-npm install --save-dev bumper
+npm install --save-dev bumper-cli
 ```
 
 ### Setup Your Project
@@ -54,6 +56,7 @@ This will:
 ### Make Your First Release
 
 #### Using NPM Scripts (Recommended)
+
 ```bash
 # Preview what your release will look like
 npm run changelog:preview
@@ -63,6 +66,7 @@ npm run release:patch
 ```
 
 #### Using CLI Directly
+
 ```bash
 # If installed globally
 bumper release patch
@@ -116,6 +120,7 @@ After setup, these convenience scripts are added to your package.json:
 ```
 
 **Usage:**
+
 ```bash
 # Main bumper command (automatically available when installed locally)
 npm run bumper preview
