@@ -2,10 +2,10 @@
 
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { generateChangelog } from './changelogGenerator.js';
-import { createRelease } from './releaseTasks.js';
-import { setupProject } from './setup.js';
-import { validateCommits } from './validateCommits.js';
+import { generateChangelog } from './changelogGenerator';
+import { createRelease } from './releaseTasks';
+import { setupProject } from './setup';
+import { validateCommits } from './validateCommits';
 
 const program = new Command();
 
