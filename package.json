@@ -66,12 +66,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/bumper.git"
+    "url": "https://github.com/TheLeePriest/bumper.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/bumper/issues"
+    "url": "https://github.com/TheLeePriest/bumper/issues"
   },
-  "homepage": "https://github.com/your-username/bumper#readme",
+  "homepage": "https://github.com/TheLeePriest/bumper#readme",
   "engines": {
     "node": ">=18.0.0"
   },
