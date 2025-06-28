@@ -156,14 +156,14 @@ function createHuskyHooks(): void {
   const huskyDir = '.husky';
   ensureDir(huskyDir);
 
-  // Create commit-msg hook (modern syntax)
-  const commitMsgHook = `npx --no -- commitlint --edit \$1
+  // Create commit-msg hook (modern syntax - no wrapper)
+  const commitMsgHook = `npx --no -- commitlint --edit $1
 `;
 
   fs.writeFileSync(path.join(huskyDir, 'commit-msg'), commitMsgHook);
   fs.chmodSync(path.join(huskyDir, 'commit-msg'), '755');
 
-  // Create pre-push hook (modern syntax)
+  // Create pre-push hook (modern syntax - no wrapper)
   const prePushHook = `npm run test
 `;
 
@@ -186,7 +186,6 @@ function updatePackageScripts(): void {
     'release:minor': './node_modules/.bin/bumper release minor',
     'release:major': './node_modules/.bin/bumper release major',
     'release:dry-run': './node_modules/.bin/bumper release patch --dry-run',
-    prepare: 'husky install',
   };
 
   packageJson.scripts = bumperScripts;
@@ -261,9 +260,8 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   console.log(chalk.blue('📋 Updating package.json...'));
   updatePackageScripts();
 
-  // Initialize Husky
-  console.log(chalk.blue('🐕 Setting up Husky...'));
-  execSync('npx husky install', { stdio: 'inherit' });
+  // Note: Husky hooks are created directly, no need for husky install
+  console.log(chalk.blue('🐕 Setting up Husky hooks...'));
 
   console.log(chalk.green('\n✅ Setup completed successfully!'));
   console.log(chalk.blue('\n📚 What was set up:'));
