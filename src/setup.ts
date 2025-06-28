@@ -28,7 +28,32 @@ function installPackage(packageName: string, dev = false): void {
 // Create commitlint configuration
 function createCommitlintConfig(): void {
   const config = `module.exports = {
-  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'type-enum': [
+      2,
+      'always',
+      [
+        'feat',
+        'fix',
+        'docs',
+        'style',
+        'refactor',
+        'perf',
+        'test',
+        'build',
+        'ci',
+        'chore',
+        'revert',
+        'security',
+      ],
+    ],
+    'type-case': [2, 'always', 'lowerCase'],
+    'type-empty': [2, 'never'],
+    'subject-case': [2, 'always', 'lowerCase'],
+    'subject-empty': [2, 'never'],
+    'subject-full-stop': [2, 'never', '.'],
+    'header-max-length': [2, 'always', 72],
+  },
 };
 `;
 
@@ -214,7 +239,7 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   // Install dependencies
   console.log(chalk.blue('📦 Installing dependencies...'));
 
-  const dependencies = ['@commitlint/cli@^18.0.0', '@commitlint/config-conventional@^18.0.0', 'husky'];
+  const dependencies = ['@commitlint/cli', 'husky'];
 
   for (const dependency of dependencies) {
     console.log(chalk.gray(`Installing ${dependency}...`));
