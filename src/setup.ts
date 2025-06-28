@@ -214,7 +214,7 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   // Install dependencies
   console.log(chalk.blue('📦 Installing dependencies...'));
 
-  const dependencies = ['@commitlint/cli', '@commitlint/config-conventional', 'husky'];
+  const dependencies = ['@commitlint/cli@^18.0.0', '@commitlint/config-conventional@^18.0.0', 'husky'];
 
   for (const dependency of dependencies) {
     console.log(chalk.gray(`Installing ${dependency}...`));
