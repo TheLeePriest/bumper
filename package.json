@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "bin": {
     "bumper": "dist/cli.js",
+    "bumper-cli": "dist/cli.js",
     "bump": "dist/cli.js"
   },
   "files": [
