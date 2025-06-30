@@ -89,3 +89,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.5.2] - 2025-06-30 (PATCH RELEASE)
+
+### 🐛 Bug Fixes
+
+- resolve automated release issues (07e504da)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
