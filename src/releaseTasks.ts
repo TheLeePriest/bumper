@@ -19,13 +19,28 @@ interface ReleaseResult {
   changelog: string;
 }
 
-// Validate git status
-function validateGitStatus(): void {
+// Check if working directory is clean
+const isWorkingDirectoryClean = (): boolean => {
   const status = execSync('git status --porcelain', {
     encoding: 'utf8',
   }).trim();
+  return !status;
+};
 
-  if (status) {
+// Get current git branch
+const getCurrentBranch = (): string => {
+  return execSync('git branch --show-current', {
+    encoding: 'utf8',
+  }).trim();
+};
+
+// Validate git status
+const validateGitStatus = (): void => {
+  if (!isWorkingDirectoryClean()) {
+    const status = execSync('git status --porcelain', {
+      encoding: 'utf8',
+    }).trim();
+    
     console.log(chalk.red('❌ Working directory is not clean!'));
     console.log(chalk.yellow('Please commit or stash your changes before releasing.'));
     console.log('\nUncommitted changes:');
@@ -34,9 +49,7 @@ function validateGitStatus(): void {
   }
 
   // Check if we're on main branch
-  const currentBranch = execSync('git branch --show-current', {
-    encoding: 'utf8',
-  }).trim();
+  const currentBranch = getCurrentBranch();
   if (currentBranch !== 'main' && currentBranch !== 'master') {
     console.log(
       chalk.yellow(
@@ -44,44 +57,69 @@ function validateGitStatus(): void {
       )
     );
   }
-}
+};
+
+// Read package.json
+const readPackageJson = () => {
+  const packagePath = path.join(process.cwd(), 'package.json');
+  return JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+};
 
 // Update package.json version
-function updatePackageVersion(version: string): void {
+const updatePackageVersion = (version: string): void => {
   const packagePath = path.join(process.cwd(), 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+  const packageJson = readPackageJson();
 
   packageJson.version = version;
   fs.writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
-}
+};
 
 // Create git tag
-function createGitTag(version: string, message: string): void {
+const createGitTag = (version: string, message: string): void => {
   execSync(`git tag -a v${version} -m "${message}"`, { stdio: 'inherit' });
-}
+};
 
 // Push changes to remote
-function pushToRemote(version: string): void {
+const pushToRemote = (version: string): void => {
   execSync('git push', { stdio: 'inherit' });
   execSync(`git push origin v${version}`, { stdio: 'inherit' });
-}
+};
 
 // Publish to npm
-function publishToNpm(): void {
+const publishToNpm = (): void => {
   execSync('npm publish', { stdio: 'inherit' });
-}
+};
+
+// Extract release notes from changelog
+const extractReleaseNotes = (changelog: string): string => {
+  return changelog
+    .split('\n')
+    .filter((changelogLine) => changelogLine.startsWith('## ['))
+    .pop() || '';
+};
+
+// Check if GitHub CLI is available
+const isGitHubCLIAvailable = (): boolean => {
+  try {
+    execSync('gh --version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 // Create GitHub release
-async function createGitHubRelease(version: string, changelog: string): Promise<void> {
-  try {
-    // Check if gh CLI is available
-    execSync('gh --version', { stdio: 'ignore' });
+const createGitHubRelease = async (version: string, changelog: string): Promise<void> => {
+  if (!isGitHubCLIAvailable()) {
+    console.log(
+      chalk.yellow('⚠️ GitHub CLI not available. Please create release manually.')
+    );
+    console.log(chalk.blue(`📝 Release notes: ${changelog}`));
+    return;
+  }
 
-    const releaseNotes =
-      changelog
-        .split('\n')
-        .filter((changelogLine) => changelogLine.startsWith('## ['))
-        .pop() || '';
+  try {
+    const releaseNotes = extractReleaseNotes(changelog);
 
     execSync(
       `gh release create v${version} --title "Release v${version}" --notes "${releaseNotes}"`,
@@ -93,67 +131,29 @@ async function createGitHubRelease(version: string, changelog: string): Promise<
     console.log(chalk.green('✅ GitHub release created successfully!'));
   } catch (_error) {
     console.log(
-      chalk.yellow('⚠️ GitHub CLI not available or failed. Please create release manually.')
+      chalk.yellow('⚠️ GitHub CLI failed. Please create release manually.')
     );
     console.log(chalk.blue(`📝 Release notes: ${changelog}`));
   }
-}
+};
 
-// Main release function
-export async function createRelease(options: ReleaseOptions): Promise<ReleaseResult> {
-  const { type, dryRun = false } = options;
+// Display dry run information
+const displayDryRunInfo = (nextVersion: string, releaseNotes: string): void => {
+  console.log('\n📋 DRY RUN - What would happen:');
+  console.log('='.repeat(50));
+  console.log(`1. Update package.json version to ${nextVersion}`);
+  console.log(`2. Commit changes with message: "chore: release v${nextVersion}"`);
+  console.log(`3. Create git tag: v${nextVersion}`);
+  console.log('4. Push changes and tag to remote');
+  console.log('5. Publish to npm');
+  console.log('6. Create GitHub release');
+  console.log('='.repeat(50));
+  console.log('\n📝 Release notes preview:');
+  console.log(releaseNotes);
+};
 
-  console.log(chalk.blue(`🚀 Starting ${dryRun ? 'DRY RUN ' : ''}release process...`));
-
-  if (!dryRun) {
-    validateGitStatus();
-  }
-
-  // Read current version
-  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  const currentVersion = packageJson.version;
-  const nextVersion = getNextVersion(currentVersion, type);
-
-  console.log(chalk.cyan(`📦 Version: ${currentVersion} → ${nextVersion}`));
-  console.log(chalk.cyan(`🎯 Release Type: ${type.toUpperCase()}`));
-
-  // Generate changelog
-  const spinner = ora('Generating changelog...').start();
-  await generateChangelog({ preview: false });
-  spinner.succeed('Changelog generated');
-
-  // Read the generated changelog
-  const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
-  const changelogContent = fs.readFileSync(changelogPath, 'utf8');
-
-  // Extract the latest release notes
-  const releaseNotes =
-    changelogContent
-      .split('\n')
-      .filter((changelogLine) => changelogLine.startsWith('## ['))
-      .pop() || '';
-
-  if (dryRun) {
-    console.log('\n📋 DRY RUN - What would happen:');
-    console.log('='.repeat(50));
-    console.log(`1. Update package.json version to ${nextVersion}`);
-    console.log(`2. Commit changes with message: "chore: release v${nextVersion}"`);
-    console.log(`3. Create git tag: v${nextVersion}`);
-    console.log('4. Push changes and tag to remote');
-    console.log('5. Publish to npm');
-    console.log('6. Create GitHub release');
-    console.log('='.repeat(50));
-    console.log('\n📝 Release notes preview:');
-    console.log(releaseNotes);
-
-    return {
-      success: true,
-      version: nextVersion,
-      tag: `v${nextVersion}`,
-      changelog: releaseNotes,
-    };
-  }
-
+// Perform git operations
+const performGitOperations = async (nextVersion: string, spinner: any): Promise<void> => {
   // Update package.json
   spinner.text = 'Updating package.json...';
   spinner.start();
@@ -180,7 +180,10 @@ export async function createRelease(options: ReleaseOptions): Promise<ReleaseRes
   spinner.start();
   pushToRemote(nextVersion);
   spinner.succeed('Pushed to remote');
+};
 
+// Perform publishing operations
+const performPublishingOperations = async (nextVersion: string, releaseNotes: string, spinner: any): Promise<void> => {
   // Publish to npm
   spinner.text = 'Publishing to npm...';
   spinner.start();
@@ -192,13 +195,67 @@ export async function createRelease(options: ReleaseOptions): Promise<ReleaseRes
   spinner.start();
   await createGitHubRelease(nextVersion, releaseNotes);
   spinner.succeed('GitHub release created');
+};
 
+// Display success message
+const displaySuccessMessage = (nextVersion: string, packageJson: any): void => {
   console.log(chalk.green('\n🎉 Release completed successfully!'));
   console.log(chalk.blue(`📦 Version: ${nextVersion}`));
   console.log(chalk.blue(`🏷️ Tag: v${nextVersion}`));
   console.log(
     chalk.blue(`📚 NPM: https://www.npmjs.com/package/${packageJson.name}/v/${nextVersion}`)
   );
+};
+
+// Main release function
+export const createRelease = async (options: ReleaseOptions): Promise<ReleaseResult> => {
+  const { type, dryRun = false } = options;
+
+  console.log(chalk.blue(`🚀 Starting ${dryRun ? 'DRY RUN ' : ''}release process...`));
+
+  if (!dryRun) {
+    validateGitStatus();
+  }
+
+  // Read current version
+  const packageJson = readPackageJson();
+  const currentVersion = packageJson.version;
+  const nextVersion = getNextVersion(currentVersion, type);
+
+  console.log(chalk.cyan(`📦 Version: ${currentVersion} → ${nextVersion}`));
+  console.log(chalk.cyan(`🎯 Release Type: ${type.toUpperCase()}`));
+
+  // Generate changelog
+  const spinner = ora('Generating changelog...').start();
+  await generateChangelog({ preview: false });
+  spinner.succeed('Changelog generated');
+
+  // Read the generated changelog
+  const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
+  const changelogContent = fs.readFileSync(changelogPath, 'utf8');
+
+  // Extract the latest release notes
+  const releaseNotes = extractReleaseNotes(changelogContent);
+
+  if (dryRun) {
+    displayDryRunInfo(nextVersion, releaseNotes);
+
+    return {
+      success: true,
+      version: nextVersion,
+      tag: `v${nextVersion}`,
+      changelog: releaseNotes,
+    };
+  }
+
+  // Perform git operations
+  await performGitOperations(nextVersion, spinner);
+
+  // Perform publishing operations
+  await performPublishingOperations(nextVersion, releaseNotes, spinner);
+
+  // Display success message
+  displaySuccessMessage(nextVersion, packageJson);
 
   return {
     success: true,
@@ -206,4 +263,4 @@ export async function createRelease(options: ReleaseOptions): Promise<ReleaseRes
     tag: `v${nextVersion}`,
     changelog: releaseNotes,
   };
-}
+};

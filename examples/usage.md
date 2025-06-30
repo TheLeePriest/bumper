@@ -257,6 +257,7 @@ npm run release:dry-run
 **Problem:** You're trying to use a command that doesn't exist in your current setup.
 
 **Solutions:**
+
 ```bash
 # If you want to use bumper from anywhere:
 npm install -g bumper-cli
@@ -281,6 +282,7 @@ npm run bumper -- preview
 **Problem:** Bumper isn't installed in the current project.
 
 **Solution:** Install it first:
+
 ```bash
 npm install --save-dev bumper-cli
 npx bumper preview
@@ -705,3 +707,49 @@ npm run release:dry-run
 - [Commitlint](https://commitlint.js.org/) - Commit validation
 
 For more, see the main [README](../README.md).
+
+---
+
+## ✨ Commit Formatting & Suggestions
+
+Bumper helps you write beautiful, conventional commit messages.
+
+### Suggest a Commit Format
+
+```bash
+bumper suggest "add login button to UI"
+```
+
+Output:
+
+```
+💡 Commit Message Suggestions
+
+Original: add login button to UI
+Suggested: feat(ui): Add login button to ui
+
+Improvements:
+  • Convert to conventional commit format
+  • Use scope for clarity
+
+Type: feat
+Scope: ui
+```
+
+### Interactive Commit Creation
+
+```bash
+bumper commit
+```
+
+Follow the prompts to generate a perfect commit message, then use it with `git commit -m`.
+
+---
+
+## 📝 CLI Commands (add to table/overview)
+
+| Command                  | Description                                 |
+|-------------------------|---------------------------------------------|
+| bumper suggest <msg>    | Suggests a pretty, conventional commit      |
+| bumper commit           | Interactive prompt for commit message       |
+| ...                     | ... (other commands)                        |

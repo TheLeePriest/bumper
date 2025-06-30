@@ -34,6 +34,8 @@
     "validate:commits": "./node_modules/.bin/bumper validate",
     "changelog:preview": "./node_modules/.bin/bumper preview",
     "changelog:generate": "./node_modules/.bin/bumper generate",
+    "commit:suggest": "bumper suggest",
+    "commit:create": "bumper commit",
     "bumper": "bumper"
   },
   "dependencies": {

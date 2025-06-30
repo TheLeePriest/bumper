@@ -10,23 +10,23 @@ interface SetupOptions {
   force?: boolean;
 }
 
-function fileExists(filePath: string): boolean {
+const fileExists = (filePath: string): boolean => {
   return fs.existsSync(filePath);
-}
+};
 
-function ensureDir(dirPath: string): void {
+const ensureDir = (dirPath: string): void => {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
-}
+};
 
-function installPackage(packageName: string, dev = false): void {
+const installPackage = (packageName: string, dev = false): void => {
   const command = dev ? `npm install --save-dev ${packageName}` : `npm install ${packageName}`;
   execSync(command, { stdio: 'ignore' });
-}
+};
 
 // Create commitlint configuration
-function createCommitlintConfig(): void {
+const createCommitlintConfig = (): void => {
   const config = `module.exports = {
   rules: {
     'type-enum': [
@@ -59,10 +59,10 @@ function createCommitlintConfig(): void {
 
   // Write as a JavaScript file
   fs.writeFileSync('commitlint.config.js', config);
-}
+};
 
 // Create GitHub Actions workflow
-function createGitHubWorkflow(): void {
+const createGitHubWorkflow = (): void => {
   const workflowDir = '.github/workflows';
   ensureDir(workflowDir);
 
@@ -149,10 +149,10 @@ jobs:
 `;
 
   fs.writeFileSync(path.join(workflowDir, 'release.yml'), workflow);
-}
+};
 
 // Create Husky hooks
-function createHuskyHooks(): void {
+const createHuskyHooks = (): void => {
   const huskyDir = '.husky';
   ensureDir(huskyDir);
 
@@ -169,12 +169,17 @@ function createHuskyHooks(): void {
 
   fs.writeFileSync(path.join(huskyDir, 'pre-push'), prePushHook);
   fs.chmodSync(path.join(huskyDir, 'pre-push'), '755');
-}
+};
+
+// Read package.json
+const readPackageJson = () => {
+  const packagePath = 'package.json';
+  return JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+};
 
 // Update package.json scripts
-function updatePackageScripts(): void {
-  const packagePath = 'package.json';
-  const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+const updatePackageScripts = (): void => {
+  const packageJson = readPackageJson();
 
   // Add convenience scripts (bumper script is automatically available via bin field)
   const bumperScripts = {
@@ -189,11 +194,11 @@ function updatePackageScripts(): void {
   };
 
   packageJson.scripts = bumperScripts;
-  fs.writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
-}
+  fs.writeFileSync('package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
+};
 
 // Create initial changelog
-function createInitialChangelog(): void {
+const createInitialChangelog = (): void => {
   const changelog = `# Changelog
 
 All notable changes to this project will be documented in this file.
@@ -209,33 +214,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `;
 
   fs.writeFileSync('CHANGELOG.md', changelog);
-}
+};
 
-// Main setup function
-export async function setupProject(options: SetupOptions = {}): Promise<void> {
-  const { force = false } = options;
+// Check if project is already set up
+const isProjectAlreadySetUp = (): boolean => {
+  return fileExists('commitlint.config.js') || fileExists('.husky');
+};
 
-  console.log(chalk.blue('🔧 Setting up bumper for your project...'));
+// Prompt for overwrite confirmation
+const promptForOverwrite = async (): Promise<boolean> => {
+  const { overwrite } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'overwrite',
+      message: 'Do you want to overwrite existing configuration?',
+      default: false,
+    },
+  ]);
+  return overwrite;
+};
 
-  // Check if already set up
-  if (!force && (fileExists('commitlint.config.js') || fileExists('.husky'))) {
-    console.log(chalk.yellow('⚠️ Project appears to already be set up.'));
-    const { overwrite } = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'overwrite',
-        message: 'Do you want to overwrite existing configuration?',
-        default: false,
-      },
-    ]);
-
-    if (!overwrite) {
-      console.log(chalk.blue('Setup cancelled.'));
-      return;
-    }
-  }
-
-  // Install dependencies
+// Install setup dependencies
+const installSetupDependencies = (): void => {
   console.log(chalk.blue('📦 Installing dependencies...'));
 
   const dependencies = ['@commitlint/cli', 'husky'];
@@ -244,8 +244,10 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
     console.log(chalk.gray(`Installing ${dependency}...`));
     installPackage(dependency, true);
   }
+};
 
-  // Create configuration files
+// Create configuration files
+const createConfigurationFiles = (): void => {
   console.log(chalk.blue('📝 Creating configuration files...'));
 
   createCommitlintConfig();
@@ -255,14 +257,10 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   if (!fileExists('CHANGELOG.md')) {
     createInitialChangelog();
   }
+};
 
-  // Update package.json
-  console.log(chalk.blue('📋 Updating package.json...'));
-  updatePackageScripts();
-
-  // Note: Husky hooks are created directly, no need for husky install
-  console.log(chalk.blue('🐕 Setting up Husky hooks...'));
-
+// Display setup summary
+const displaySetupSummary = (): void => {
   console.log(chalk.green('\n✅ Setup completed successfully!'));
   console.log(chalk.blue('\n📚 What was set up:'));
   console.log('  • Conventional commit validation');
@@ -282,4 +280,38 @@ export async function setupProject(options: SetupOptions = {}): Promise<void> {
   console.log(chalk.blue('\n📖 Learn more:'));
   console.log('  • Conventional Commits: https://conventionalcommits.org/');
   console.log('  • Semantic Versioning: https://semver.org/');
-} 
+};
+
+// Main setup function
+export const setupProject = async (options: SetupOptions = {}): Promise<void> => {
+  const { force = false } = options;
+
+  console.log(chalk.blue('🔧 Setting up bumper for your project...'));
+
+  // Check if already set up
+  if (!force && isProjectAlreadySetUp()) {
+    console.log(chalk.yellow('⚠️ Project appears to already be set up.'));
+    const overwrite = await promptForOverwrite();
+
+    if (!overwrite) {
+      console.log(chalk.blue('Setup cancelled.'));
+      return;
+    }
+  }
+
+  // Install dependencies
+  installSetupDependencies();
+
+  // Create configuration files
+  createConfigurationFiles();
+
+  // Update package.json
+  console.log(chalk.blue('📋 Updating package.json...'));
+  updatePackageScripts();
+
+  // Note: Husky hooks are created directly, no need for husky install
+  console.log(chalk.blue('🐕 Setting up Husky hooks...'));
+
+  // Display summary
+  displaySetupSummary();
+}; 

@@ -467,3 +467,57 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with ❤️ by developers, for developers.
+
+## ✨ Commit Formatting & Suggestions
+
+Bumper now helps you write beautiful, conventional commit messages!
+
+### Suggest a Commit Format
+
+Use the `suggest` command to get a conventional commit suggestion and improvement tips:
+
+```bash
+bumper suggest "add login button to UI"
+```
+
+Output example:
+
+```
+💡 Commit Message Suggestions
+
+Original: add login button to UI
+Suggested: feat(ui): Add login button to ui
+
+Improvements:
+  • Convert to conventional commit format
+  • Use scope for clarity
+
+Type: feat
+Scope: ui
+```
+
+### Interactive Commit Creation
+
+Use the `commit` command for an interactive prompt to generate a conventional commit message:
+
+```bash
+bumper commit
+```
+
+You'll be guided through type, scope, breaking change, and description. Copy the generated message into your `git commit -m` command.
+
+---
+
+## 🚀 CLI Commands
+
+- `bumper suggest <message>` — Suggests a pretty, conventional commit message
+- `bumper commit` — Interactive prompt to create a commit message
+- ... (other commands as before)
+
+---
+
+## 💡 Best Practices (update)
+
+- **Use `bumper suggest`** to check your commit messages before committing
+- **Use `bumper commit`** for an interactive, foolproof commit message experience
+- ... (existing best practices)

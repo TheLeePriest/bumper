@@ -13,6 +13,13 @@ export {
   validateCommits,
 } from './validateCommits.js';
 
+export {
+  formatCommitMessage,
+  suggestCommitFormat,
+  createInteractiveCommit,
+  displayCommitSuggestions,
+} from './commitFormatter.js';
+
 // Types
 export interface Commit {
   hash: string;
