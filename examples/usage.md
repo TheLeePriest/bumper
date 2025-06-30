@@ -6,7 +6,29 @@ Bumper is a magical release management system for Node.js projects. Here's how t
 
 ## 🚀 Installation & Usage - Choose Your Method
 
-### Method 1: Global Installation (CLI everywhere)
+### Method 1: Per-Project Installation (Recommended for teams)
+
+```bash
+# Install in your project
+npm install --save-dev bumper-cli
+
+# Use with npm run (recommended)
+npm run validate:commits
+npm run changelog:preview
+npm run release:patch
+
+# Or use with npx (alternative)
+npx bumper-cli preview
+npx bumper-cli validate
+npx bumper-cli release patch
+```
+
+**✅ Works:** In the project where it's installed  
+**✅ Benefits:** Version control, team consistency, isolation, no npx needed
+
+---
+
+### Method 2: Global Installation (CLI everywhere)
 
 ```bash
 # Install globally
@@ -20,31 +42,6 @@ bumper release patch
 
 **✅ Works:** Anywhere on your system  
 **❌ Limitation:** Global installation, potential version conflicts
-
----
-
-### Method 2: Per-Project Installation (Recommended for teams)
-
-```bash
-# Install in your project
-npm install --save-dev bumper-cli
-
-# Use with npx (always works in this project)
-npx bumper preview
-npx bumper validate
-npx bumper release patch
-
-# Optional: Run setup to add convenience scripts
-npx bumper setup
-
-# Then you can also use convenience scripts
-npm run changelog:preview
-npm run release:patch
-npm run validate:commits
-```
-
-**✅ Works:** In the project where it's installed  
-**✅ Benefits:** Version control, team consistency, isolation
 
 ---
 
@@ -67,9 +64,9 @@ npm run bumper -- release patch
 
 | Installation Method | Command | Works In | Example |
 |-------------------|---------|----------|---------|
+| **Per-Project** | `npm run <script>` | Project directory | `npm run validate:commits` |
+| **Per-Project** | `npx bumper-cli <command>` | Project directory | `npx bumper-cli preview` |
 | **Global** | `bumper <command>` | Any directory | `bumper preview` |
-| **Per-Project** | `npx bumper <command>` | Project directory | `npx bumper preview` |
-| **Per-Project** | `npm run <script>` | Project directory (after setup) | `npm run changelog:preview` |
 | **Bumper Dev** | `npm run bumper -- <command>` | Bumper project only | `npm run bumper -- preview` |
 
 ---
@@ -113,6 +110,31 @@ npm run bumper -- preview
 
 ## 🏃 Detailed Usage Examples
 
+### Per-Project Installation Workflow (Recommended)
+
+```bash
+# 1. Navigate to your project
+cd /your/project
+
+# 2. Install bumper
+npm install --save-dev bumper-cli
+
+# 3. Use npm run scripts (recommended)
+npm run validate:commits
+npm run changelog:preview
+npm run changelog:generate
+npm run release:patch
+npm run release:minor
+npm run release:major
+npm run release:dry-run
+
+# 4. Or use npx (alternative)
+npx bumper-cli preview
+npx bumper-cli validate
+npx bumper-cli generate
+npx bumper-cli release patch
+```
+
 ### Global Installation Workflow
 
 ```bash
@@ -125,30 +147,6 @@ bumper preview
 bumper validate
 bumper generate
 bumper release patch
-```
-
-### Per-Project Installation Workflow
-
-```bash
-# 1. Navigate to your project
-cd /your/project
-
-# 2. Install bumper
-npm install --save-dev bumper-cli
-
-# 3. Use npx (always works)
-npx bumper preview
-npx bumper validate
-npx bumper generate
-npx bumper release patch
-
-# 4. Optional: Run setup for convenience scripts
-npx bumper setup
-
-# 5. Now you can also use convenience scripts
-npm run changelog:preview
-npm run release:patch
-npm run validate:commits
 ```
 
 ### Bumper Development Workflow
@@ -167,42 +165,39 @@ npm run bumper -- release patch
 
 ## 📝 Command Reference
 
-All these commands work with any installation method (just replace `bumper` with `npx bumper` for per-project):
-
 ### Preview & Validation
 
 ```bash
 # Preview your next release
-bumper preview
-# or: npx bumper preview
+npm run changelog:preview
+# or: npx bumper-cli preview
 
 # Validate commit messages
-bumper validate
-# or: npx bumper validate
+npm run validate:commits
+# or: npx bumper-cli validate
 
 # Generate changelog
-bumper generate
-# or: npx bumper generate
+npm run changelog:generate
+# or: npx bumper-cli generate
 ```
 
 ### Release Management
 
 ```bash
 # Create releases
-bumper release patch
-bumper release minor
-bumper release major
+npm run release:patch
+npm run release:minor
+npm run release:major
 
 # Dry run (preview without making changes)
-bumper release patch --dry-run
+npm run release:dry-run
 ```
 
 ### Setup
 
 ```bash
 # Setup project (adds convenience scripts)
-bumper setup
-# or: npx bumper setup
+npx bumper-cli setup
 ```
 
 ### Convenience Scripts (After Setup)
@@ -230,27 +225,27 @@ npm run release:dry-run
 
 ```bash
 # Create a patch release (1.0.0 → 1.0.1)
-bumper release patch
-# or: npx bumper release patch
+npm run release:patch
+# or: npx bumper-cli release patch
 
 # Create a minor release (1.0.0 → 1.1.0)
-bumper release minor
-# or: npx bumper release minor
+npm run release:minor
+# or: npx bumper-cli release minor
 
 # Create a major release (1.0.0 → 2.0.0)
-bumper release major
-# or: npx bumper release major
+npm run release:major
+# or: npx bumper-cli release major
 
 # Dry run (preview without making changes)
-bumper release patch --dry-run
-# or: npx bumper release patch --dry-run
+npm run release:dry-run
+# or: npx bumper-cli release patch --dry-run
 ```
 
 ### Dry Run Example
 
 ```bash
-bumper release patch --dry-run
-# or: npx bumper release patch --dry-run
+npm run release:dry-run
+# or: npx bumper-cli release patch --dry-run
 ```
 
 ---
@@ -297,12 +292,12 @@ npx bumper preview
 
 | Method | Install | Usage | Works In | Best For |
 |--------|---------|-------|----------|----------|
+| **Per-Project** | `npm install --save-dev bumper-cli` | `npm run <script>` | Project directory only | **Teams, production projects** |
+| **Per-Project** | `npm install --save-dev bumper-cli` | `npx bumper-cli <command>` | Project directory only | Teams, production projects |
 | **Global** | `npm install -g bumper-cli` | `bumper <command>` | Any directory | CLI tools, personal use |
-| **Per-Project** | `npm install --save-dev bumper-cli` | `npx bumper <command>` | Project directory only | Teams, production projects |
-| **Per-Project** | `npm install --save-dev bumper-cli` + `npx bumper setup` | `npm run <script>` | Project directory only | Teams, production projects |
 | **Bumper Dev** | (in bumper project) | `npm run bumper -- <command>` | Bumper project only | Bumper development |
 
-**Key Point:** The `npm run bumper` command only exists in the bumper project itself. Other projects use `npx bumper` or convenience scripts.
+**Key Point:** The `npm run bumper` command only exists in the bumper project itself. Other projects use `npm run <script>` or `npx bumper-cli`.
 
 ---
 
@@ -520,27 +515,27 @@ When you run a release, Bumper:
 
 ```bash
 # Create a patch release (1.0.0 → 1.0.1)
-bumper release patch
-# or: npx bumper release patch
+npm run release:patch
+# or: npx bumper-cli release patch
 
 # Create a minor release (1.0.0 → 1.1.0)
-bumper release minor
-# or: npx bumper release minor
+npm run release:minor
+# or: npx bumper-cli release minor
 
 # Create a major release (1.0.0 → 2.0.0)
-bumper release major
-# or: npx bumper release major
+npm run release:major
+# or: npx bumper-cli release major
 
 # Dry run (preview without making changes)
-bumper release patch --dry-run
-# or: npx bumper release patch --dry-run
+npm run release:dry-run
+# or: npx bumper-cli release patch --dry-run
 ```
 
 ### Dry Run Example
 
 ```bash
-bumper release patch --dry-run
-# or: npx bumper release patch --dry-run
+npm run release:dry-run
+# or: npx bumper-cli release patch --dry-run
 ```
 
 Output:
@@ -661,8 +656,8 @@ Automatically creates `.github/workflows/release.yml` for automated releases tri
 
 ```bash
 # Check commit format
-bumper validate
-# or: npx bumper validate
+npm run bumper -- validate
+# or: npx bumper-cli validate
 
 # Fix recent commit
 git commit --amend -m "feat: add new feature"
@@ -678,8 +673,8 @@ git status
 git checkout main
 
 # Try dry run first
-bumper release patch --dry-run
-# or: npx bumper release patch --dry-run
+npm run release:dry-run
+# or: npx bumper-cli release patch --dry-run
 ```
 
 **GitHub release fails?**
