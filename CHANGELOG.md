@@ -69,3 +69,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.5.0] - 2025-06-30 (MINOR RELEASE)
+
+### ✨ Features
+
+- add commit formatting and refactor to functional approach (5477fe7a)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
