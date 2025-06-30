@@ -41,3 +41,21 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.2.1] - 2025-06-30 (PATCH RELEASE)
+
+### 📚 Documentation
+
+- make npm run scripts the primary recommended way to use bumper (a9698f4f)
+
+### 🔨 Chores
+
+- remove test file (5350acf0)
+
+### ✅ Tests
+
+- test commit to check hooks (2e5f50a4)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
