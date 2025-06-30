@@ -79,3 +79,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.5.1] - 2025-06-30 (PATCH RELEASE)
+
+### 📚 Documentation
+
+- completely rewrite README with comprehensive best practices (d6017bc5)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
