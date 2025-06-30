@@ -59,3 +59,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.4.0] - 2025-06-30 (MINOR RELEASE)
+
+### ✨ Features
+
+- expose both 'bumper' and 'bumper-cli' binaries for CLI usage flexibility (a2f7e4f8)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
