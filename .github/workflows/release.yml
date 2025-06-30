@@ -76,5 +76,5 @@ jobs:
       - name: Notify release
         run: |
           echo "🎉 Release ${{ github.ref_name }} has been published!"
-          echo "📦 NPM: https://www.npmjs.com/package/${{ github.repository }}"
+          echo "📦 NPM: https://www.npmjs.com/package/bumper-cli"
           echo "🏷️ GitHub: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref }}"
