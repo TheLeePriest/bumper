@@ -7,6 +7,7 @@ import { createRelease } from './releaseTasks';
 import { setupProject } from './setup';
 import { validateCommits } from './validateCommits';
 import { displayCommitSuggestions, createInteractiveCommit } from './commitFormatter';
+import { handleCheckReleaseReadiness, handleAutoLabel, setupGitHubIntegration } from './githubIntegration';
 
 const program = new Command();
 
@@ -54,6 +55,18 @@ const handleCommit = async () => {
   }
 };
 
+const handleReleaseReadiness = () => {
+  handleCheckReleaseReadiness();
+};
+
+const handleAutoLabelPR = async (prNumber: string) => {
+  await handleAutoLabel(prNumber);
+};
+
+const handleSetupGitHub = async () => {
+  await setupGitHubIntegration();
+};
+
 // Command definitions
 program
   .command('preview')
@@ -92,5 +105,21 @@ program
   .command('commit')
   .description('Create a conventional commit interactively')
   .action(handleCommit);
+
+program
+  .command('check-release-readiness')
+  .description('Check if release is ready based on GitHub labels and requirements')
+  .action(handleReleaseReadiness);
+
+program
+  .command('auto-label')
+  .description('Auto-label a PR based on commit messages')
+  .argument('<pr-number>', 'The PR number to label')
+  .action(handleAutoLabelPR);
+
+program
+  .command('setup-github')
+  .description('Setup GitHub integration with auto-labeling and release validation')
+  .action(handleSetupGitHub);
 
 program.parse();

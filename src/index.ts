@@ -20,6 +20,13 @@ export {
   displayCommitSuggestions,
 } from './commitFormatter.js';
 
+export {
+  checkReleaseReadiness,
+  autoLabelPR,
+  setupGitHubIntegration,
+  generateEnhancedChangelog,
+} from './githubIntegration.js';
+
 // Types
 export interface Commit {
   hash: string;
@@ -64,4 +71,43 @@ export interface ReleaseResult {
 
 export interface SetupOptions {
   force?: boolean;
+}
+
+export interface CommitSuggestion {
+  original: string;
+  suggested: string;
+  type: string;
+  scope?: string;
+  breaking: boolean;
+  improvements: string[];
+}
+
+export interface GitHubConfig {
+  releaseRequirements?: {
+    requiredLabels?: string[];
+    blockingLabels?: string[];
+    requiredStatusChecks?: string[];
+  };
+  autoLabel?: {
+    enabled?: boolean;
+    mappings?: Record<string, string[]>;
+  };
+  changelog?: {
+    groupByLabels?: boolean;
+    labelGroups?: Record<string, string[]>;
+    priorityLabels?: string[];
+  };
+}
+
+export interface ReleaseReadinessResult {
+  isReady: boolean;
+  issues: string[];
+  warnings: string[];
+  prs: Array<{
+    number: number;
+    title: string;
+    labels: string[];
+    status: 'open' | 'closed' | 'merged';
+    commits: string[];
+  }>;
 }

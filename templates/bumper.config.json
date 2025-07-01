@@ -1,0 +1,35 @@
+{
+  "releaseRequirements": {
+    "requiredLabels": ["ready-for-release", "qa-approved"],
+    "blockingLabels": ["do-not-release", "wip", "block-release", "needs-review"],
+    "requiredStatusChecks": ["ci", "test", "lint"]
+  },
+  "autoLabel": {
+    "enabled": true,
+    "mappings": {
+      "feat": ["enhancement"],
+      "fix": ["bug"],
+      "security": ["security"],
+      "docs": ["documentation"],
+      "test": ["testing"],
+      "perf": ["performance"],
+      "refactor": ["refactor"],
+      "style": ["style"],
+      "chore": ["maintenance"],
+      "ci": ["ci"],
+      "build": ["build"]
+    }
+  },
+  "changelog": {
+    "groupByLabels": true,
+    "labelGroups": {
+      "🚀 High Priority": ["high-priority", "critical", "security"],
+      "💥 Breaking Changes": ["breaking-change"],
+      "🎨 User Facing": ["user-facing", "ui", "ux", "feature"],
+      "🔧 Internal": ["internal", "refactor", "chore", "maintenance"],
+      "🐛 Bug Fixes": ["bug", "fix"],
+      "📚 Documentation": ["documentation", "docs"]
+    },
+    "priorityLabels": ["high-priority", "critical", "security", "breaking-change"]
+  }
+} 

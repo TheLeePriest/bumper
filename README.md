@@ -22,17 +22,20 @@ Bumper is a modern, developer-friendly tool that automates your entire release p
 - 🐕 **Git Hooks** - Pre-commit validation with Husky
 - 📦 **NPM Publishing** - Seamless package publishing
 - 🎪 **Platform Agnostic** - Works with any Git-based project
+- 🏷️ **GitHub Labels** - Auto-labeling and release readiness validation
 
 ## 🚀 Quick Start
 
 ### 1. Install Bumper
 
 **Recommended: Per-Project Installation**
+
 ```bash
 npm install --save-dev bumper-cli
 ```
 
 **Alternative: Global Installation**
+
 ```bash
 npm install -g bumper-cli
 ```
@@ -47,6 +50,7 @@ npx bumper setup
 ```
 
 This will:
+
 - ✅ Install necessary dependencies (`@commitlint/cli`, `husky`)
 - ✅ Create conventional commit validation rules
 - ✅ Set up Git hooks with Husky
@@ -97,6 +101,11 @@ bumper suggest "your message"
 
 # Interactive commit creation
 bumper commit
+
+# GitHub integration
+bumper setup-github
+bumper check-release-readiness
+bumper auto-label <pr-number>
 ```
 
 ### 📦 NPM Scripts (After Setup)
@@ -114,12 +123,16 @@ After running `bumper setup`, these convenience scripts are added to your packag
     "release:major": "bumper release major",
     "release:dry-run": "bumper release patch --dry-run",
     "commit:suggest": "bumper suggest",
-    "commit:create": "bumper commit"
+    "commit:create": "bumper commit",
+    "github:setup": "bumper setup-github",
+    "github:check": "bumper check-release-readiness",
+    "github:label": "bumper auto-label"
   }
 }
 ```
 
 **Usage:**
+
 ```bash
 # Convenience scripts (recommended)
 npm run changelog:preview
@@ -127,7 +140,132 @@ npm run release:patch
 npm run validate:commits
 npm run commit:suggest "add login feature"
 npm run commit:create
+npm run github:check
+npm run github:label 123
 ```
+
+## 🏷️ GitHub Integration
+
+Bumper provides powerful GitHub integration features to streamline your release process and improve team collaboration.
+
+### 🚀 Quick Setup
+
+```bash
+# Setup GitHub integration (requires GitHub CLI)
+bumper setup-github
+```
+
+This creates:
+
+- 📋 `bumper.config.json` - Configuration file
+- 🔄 Auto-labeling GitHub Actions workflow
+- 🏷️ Release readiness validation
+
+### 🔍 Release Readiness Validation
+
+Check if your release is ready based on GitHub labels and requirements:
+
+```bash
+bumper check-release-readiness
+```
+
+**What it checks:**
+
+- ✅ No blocking labels on PRs
+- ✅ Required labels present (if configured)
+- ✅ All PRs properly labeled
+- ⚠️ Status checks (if configured)
+
+**Example output:**
+
+```
+🔍 Checking release readiness...
+
+✅ Release is ready!
+
+📋 PRs since last release:
+  • #123: Add new login feature [enhancement, ready-for-release]
+  • #124: Fix authentication bug [bug, qa-approved]
+```
+
+### 🏷️ Auto-Labeling
+
+Automatically label PRs based on commit messages:
+
+```bash
+# Label a specific PR
+bumper auto-label 123
+
+# Or use the GitHub Actions workflow (automatic)
+```
+
+**Default mappings:**
+
+- `feat` → `enhancement`
+- `fix` → `bug`
+- `security` → `security`
+- `docs` → `documentation`
+
+### ⚙️ Configuration
+
+Create `bumper.config.json` in your project root:
+
+```json
+{
+  "releaseRequirements": {
+    "requiredLabels": ["ready-for-release", "qa-approved"],
+    "blockingLabels": ["do-not-release", "wip", "block-release"],
+    "requiredStatusChecks": ["ci", "test"]
+  },
+  "autoLabel": {
+    "enabled": true,
+    "mappings": {
+      "feat": ["enhancement"],
+      "fix": ["bug"],
+      "security": ["security"],
+      "docs": ["documentation"]
+    }
+  },
+  "changelog": {
+    "groupByLabels": true,
+    "labelGroups": {
+      "🚀 High Priority": ["high-priority", "critical"],
+      "💥 Breaking Changes": ["breaking-change"],
+      "🎨 User Facing": ["user-facing", "ui", "ux"]
+    }
+  }
+}
+```
+
+### 🎯 Best Practices
+
+1. **Set Up Labels Early**
+
+   ```bash
+   # Create essential labels in your GitHub repo
+   gh label create "ready-for-release" --color "28a745"
+   gh label create "do-not-release" --color "dc3545"
+   gh label create "qa-approved" --color "17a2b8"
+   ```
+
+2. **Use Release Readiness Before Releases**
+
+   ```bash
+   # Always check before releasing
+   bumper check-release-readiness
+   npm run release:patch
+   ```
+
+3. **Customize for Your Team**
+
+   ```json
+   // Add team-specific labels
+   "mappings": {
+     "feat": ["enhancement", "user-facing"],
+     "fix": ["bug", "hotfix"],
+     "docs": ["documentation", "user-facing"]
+   }
+   ```
 
 ## ✨ Commit Formatting & Suggestions
 
@@ -142,6 +280,7 @@ bumper suggest "add login button to UI"
 ```
 
 **Output:**
+
 ```
 💡 Commit Message Suggestions
 
@@ -165,6 +304,7 @@ bumper commit
 ```
 
 You'll be guided through:
+
 1. **Commit Type** - feat, fix, docs, etc.
 2. **Scope** - optional component/module name
 3. **Breaking Change** - whether this is a breaking change
@@ -255,6 +395,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
 ### 🎯 Commit Message Best Practices
 
 1. **Use Bumper's Tools**
+
    ```bash
    # Always check your commit message first
    bumper suggest "your message"
@@ -280,6 +421,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    - `chore`: Maintenance tasks
 
 4. **Use Scopes Wisely**
+
    ```bash
    # Good - specific scope
    feat(auth): add OAuth2 support
@@ -291,6 +433,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    ```
 
 5. **Handle Breaking Changes**
+
    ```bash
    # Breaking change in type
    feat!: change API response format
@@ -304,6 +447,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
 ### 🚀 Release Management Best Practices
 
 1. **Start Small**
+
    ```bash
    # Always preview before releasing
    npm run changelog:preview
@@ -318,6 +462,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    - `major`: Breaking changes
 
 3. **Keep a Clean History**
+
    ```bash
    # Validate commits before releasing
    npm run validate:commits
@@ -334,18 +479,21 @@ Thanks to John Doe, Jane Smith for contributing to this release!
 ### 🏗️ Project Setup Best Practices
 
 1. **Install Per-Project**
+
    ```bash
    # Recommended for teams
    npm install --save-dev bumper-cli
    ```
 
 2. **Run Setup Early**
+
    ```bash
    # Set up bumper at the start of your project
    bumper setup
    ```
 
 3. **Use NPM Scripts**
+
    ```bash
    # Use the convenience scripts
    npm run changelog:preview
@@ -360,6 +508,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
 ### 🔧 Development Workflow
 
 1. **Daily Development**
+
    ```bash
    # Write your code
    git add .
@@ -374,6 +523,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    ```
 
 2. **Before Releasing**
+
    ```bash
    # Validate all commits
    npm run validate:commits
@@ -393,6 +543,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
 ### 🚨 Common Mistakes to Avoid
 
 1. **Don't Skip Validation**
+
    ```bash
    # ❌ Don't release without validating
    npm run release:patch
@@ -403,6 +554,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    ```
 
 2. **Don't Ignore Commit Messages**
+
    ```bash
    # ❌ Poor commit message
    git commit -m "fix stuff"
@@ -412,6 +564,7 @@ Thanks to John Doe, Jane Smith for contributing to this release!
    ```
 
 3. **Don't Skip Previews**
+
    ```bash
    # ❌ Don't release blind
    npm run release:patch
