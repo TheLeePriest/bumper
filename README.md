@@ -12,17 +12,29 @@ Bumper is a modern, developer-friendly tool that automates your entire release p
 
 ## ✨ Features
 
-- 🎯 **Zero Configuration** - Works out of the box with sensible defaults
-- 📝 **Beautiful Changelogs** - Auto-generated with emojis and smart categorization
-- 🔍 **Commit Validation** - Enforces conventional commit standards
-- ✨ **Commit Formatting** - Interactive commit creation and suggestions
-- 🚀 **Automated Releases** - One command to rule them all
-- 🎨 **Beautiful UX** - Colorful output with spinners and progress indicators
-- 🔧 **GitHub Integration** - Automatic releases and workflow setup
-- 🐕 **Git Hooks** - Pre-commit validation with Husky
-- 📦 **NPM Publishing** - Seamless package publishing
-- 🎪 **Platform Agnostic** - Works with any Git-based project
-- 🏷️ **GitHub Labels** - Auto-labeling and release readiness validation
+### 🚀 **Core Release Management**
+- **Automated Releases** - One command creates tags, changelogs, and GitHub releases
+- **Smart Versioning** - Automatic patch/minor/major version bumping
+- **Beautiful Changelogs** - Auto-generated with emojis and smart categorization
+- **NPM Publishing** - Seamless package publishing with authentication
+
+### 🔍 **Commit Management**
+- **Commit Validation** - Enforces conventional commit standards
+- **Interactive Commits** - Guided commit message creation
+- **Commit Suggestions** - AI-powered commit message improvements
+- **Git Hooks** - Pre-commit validation with Husky
+
+### 🏷️ **GitHub Integration**
+- **Auto-Labeling** - Automatically label PRs based on commit messages
+- **Release Readiness** - Validate releases based on GitHub labels and requirements
+- **Enhanced Changelogs** - Group changelog entries by labels for better organization
+- **Workflow Automation** - GitHub Actions for seamless integration
+
+### 🎯 **Developer Experience**
+- **Zero Configuration** - Works out of the box with sensible defaults
+- **Beautiful UX** - Colorful output with spinners and progress indicators
+- **Platform Agnostic** - Works with any Git-based project
+- **Flexible Configuration** - Customize everything via `bumper.config.json`
 
 ## 🚀 Quick Start
 
@@ -146,7 +158,7 @@ npm run github:label 123
 
 ## 🏷️ GitHub Integration
 
-Bumper provides powerful GitHub integration features to streamline your release process and improve team collaboration.
+Bumper's GitHub integration provides **auto-labeling**, **release validation**, and **enhanced changelogs** to streamline your workflow.
 
 ### 🚀 Quick Setup
 
@@ -155,37 +167,53 @@ Bumper provides powerful GitHub integration features to streamline your release 
 bumper setup-github
 ```
 
-This creates:
+**Creates:**
+- `bumper.config.json` - Configuration file
+- `.github/workflows/auto-label.yml` - Auto-labeling workflow
+- Documentation and next steps
 
-- 📋 `bumper.config.json` - Configuration file
-- 🔄 Auto-labeling GitHub Actions workflow
-- 🏷️ Release readiness validation
+### 🏷️ Auto-Labeling PRs
+
+**Command:** `bumper auto-label <pr-number>`
+
+**What it does:** Analyzes commit messages in a PR and adds appropriate labels.
+
+**Default mappings:**
+- `feat` → `enhancement`
+- `fix` → `bug`
+- `security` → `security`
+- `docs` → `documentation`
+
+**Example:**
+```bash
+# PR #123 has commits: "feat: add login" and "fix: auth bug"
+bumper auto-label 123
+# Result: Adds "enhancement" and "bug" labels
+```
+
+**Automation:** The GitHub Actions workflow automatically labels PRs when they're opened or updated.
 
 ### 🔍 Release Readiness Validation
 
-Check if your release is ready based on GitHub labels and requirements:
-
-```bash
-bumper check-release-readiness
-```
+**Command:** `bumper check-release-readiness`
 
 **What it checks:**
-
-- ✅ No blocking labels on PRs
+- ✅ No blocking labels on PRs since last release
 - ✅ Required labels present (if configured)
 - ✅ All PRs properly labeled
 - ⚠️ Status checks (if configured)
 
 **Example output:**
-
 ```
 🔍 Checking release readiness...
 
-✅ Release is ready!
+❌ Release is not ready:
+  • PR #123 has blocking label: do-not-release
+  • PR #124 missing required label (ready-for-release)
 
 📋 PRs since last release:
-  • #123: Add new login feature [enhancement, ready-for-release]
-  • #124: Fix authentication bug [bug, qa-approved]
+  • #123: Add new login feature [enhancement, do-not-release]
+  • #124: Fix authentication bug [bug]
 ```
 
 ### 🏷️ Auto-Labeling
@@ -208,15 +236,24 @@ bumper auto-label 123
 
 ### ⚙️ Configuration
 
-Create `bumper.config.json` in your project root:
+**File:** `bumper.config.json` (created by `bumper setup-github`)
 
+**Key sections:**
+
+**Release Requirements:**
 ```json
 {
   "releaseRequirements": {
     "requiredLabels": ["ready-for-release", "qa-approved"],
     "blockingLabels": ["do-not-release", "wip", "block-release"],
     "requiredStatusChecks": ["ci", "test"]
-  },
+  }
+}
+```
+
+**Auto-Labeling:**
+```json
+{
   "autoLabel": {
     "enabled": true,
     "mappings": {
@@ -225,7 +262,13 @@ Create `bumper.config.json` in your project root:
       "security": ["security"],
       "docs": ["documentation"]
     }
-  },
+  }
+}
+```
+
+**Enhanced Changelogs:**
+```json
+{
   "changelog": {
     "groupByLabels": true,
     "labelGroups": {
@@ -237,35 +280,45 @@ Create `bumper.config.json` in your project root:
 }
 ```
 
+**Enhanced changelog example:**
+```markdown
+## [1.5.7] - 2024-01-01
+
+### 🚀 High Priority
+- feat: add critical security feature (abc123)
+
+### 🎨 User Facing
+- feat: improve login UI (def456)
+
+### 🔧 Internal
+- refactor: optimize performance (ghi789)
+```
+
 ### 🎯 Best Practices
 
-1. **Set Up Labels Early**
+**1. Essential Labels**
+```bash
+gh label create "ready-for-release" --color "28a745"
+gh label create "do-not-release" --color "dc3545"
+gh label create "qa-approved" --color "17a2b8"
+gh label create "enhancement" --color "0075ca"
+gh label create "bug" --color "d73a4a"
+```
 
-   ```bash
-   # Create essential labels in your GitHub repo
-   gh label create "ready-for-release" --color "28a745"
-   gh label create "do-not-release" --color "dc3545"
-   gh label create "qa-approved" --color "17a2b8"
-   ```
+**2. Team Workflow**
+```bash
+# 1. Developer creates PR → Auto-labeling adds initial labels
+# 2. QA reviews → Adds "qa-approved" label  
+# 3. Before release → Run "bumper check-release-readiness"
+# 4. If ready → Create release
+# 5. If not ready → Fix issues (remove blocking labels, add required labels)
+```
 
-2. **Use Release Readiness Before Releases**
-
-   ```bash
-   # Always check before releasing
-   bumper check-release-readiness
-   npm run release:patch
-   ```
-
-3. **Customize for Your Team**
-
-   ```json
-   // Add team-specific labels
-   "mappings": {
-     "feat": ["enhancement", "user-facing"],
-     "fix": ["bug", "hotfix"],
-     "docs": ["documentation", "user-facing"]
-   }
-   ```
+**3. Always validate before releasing**
+```bash
+bumper check-release-readiness
+npm run release:patch
+```
 
 ## ✨ Commit Formatting & Suggestions
 
