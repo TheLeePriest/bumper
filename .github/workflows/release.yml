@@ -61,10 +61,9 @@ jobs:
 
       - name: Update release notes
         run: |
-          # Extract the latest changelog entry
-          CHANGELOG_CONTENT=$(cat CHANGELOG.md)
-          LATEST_ENTRY=$(echo "$CHANGELOG_CONTENT" | sed -n '/^## [\'${{ github.ref_name }}'\']/,/^## \[/p' | sed '\$d')
-
+          # Extract the latest changelog entry using awk (more robust)
+          LATEST_ENTRY=$(awk '/^## \[/{if (p) exit; p=1; next} p' CHANGELOG.md)
+          
           # Update the GitHub release with formatted content
           gh api \
             --method PATCH \
