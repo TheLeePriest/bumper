@@ -109,3 +109,13 @@ Thanks to Lee Priest for contributing to this release!
 
 Thanks to Lee Priest for contributing to this release!
 
+## [1.6.0] - 2025-07-05 (MINOR RELEASE)
+
+### ✨ Features
+
+- **legacy:** add non-invasive 'line in the sand' migration and full legacy support (fb705314)
+
+### 👥 Contributors
+
+Thanks to Lee Priest for contributing to this release!
+
