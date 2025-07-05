@@ -80,6 +80,126 @@ npm run changelog:preview
 npm run release:patch
 ```
 
+## 🔄 Legacy Project Migration
+
+If you have an existing project that doesn't follow conventional commit format, bumper provides powerful tools to help you migrate. You can choose between **invasive migration** (rewriting history) or **non-invasive migration** (drawing a line in the sand).
+
+### 🏖️ Non-Invasive: Line in the Sand (Recommended)
+
+The safest approach is to draw a line in the sand and start fresh with conventional commits from a specific point forward:
+
+```bash
+# Start using conventional commits from now on
+bumper line-in-sand
+
+# Start from a specific date
+bumper line-in-sand --start-date 2024-01-01
+
+# Start from a specific commit
+bumper line-in-sand --start-commit abc12345
+
+# Start from a specific tag
+bumper line-in-sand --tag v1.0.0
+```
+
+**Benefits:**
+- ✅ **No git history rewriting** - completely safe
+- ✅ **Immediate setup** - start using conventional commits right away
+- ✅ **Team friendly** - no coordination needed
+- ✅ **Gradual adoption** - legacy commits remain unchanged
+- ✅ **Changelog support** - works with mixed commit formats
+
+**What happens:**
+- Sets up conventional commit infrastructure
+- Creates a marker file and git tag to track the start point
+- All new commits from that point forward use conventional format
+- Legacy commits remain unchanged but are still included in changelogs
+- Commit validation is active for new commits only
+
+### 🔧 Invasive: Full Migration
+
+For projects that want to convert all existing commits to conventional format:
+
+### 1. Analyze Your Current State
+
+```bash
+# Analyze commit patterns in your project
+bumper analyze-legacy
+
+# Analyze specific commit range
+bumper analyze-legacy --range HEAD~100..HEAD
+
+# Save analysis to file
+bumper analyze-legacy --output analysis.json
+```
+
+This will show you:
+- 📊 Commit statistics and migration rate
+- 📋 Common commit patterns and suggested types
+- 💡 Recommended migration strategy
+- 🎯 Next steps for your project
+
+### 2. Migrate Your Project
+
+```bash
+# Migrate project to conventional commits
+bumper migrate-legacy
+
+# Force migration even if already set up
+bumper migrate-legacy --force
+
+# Migrate commits from a specific date
+bumper migrate-legacy --start-date 2024-01-01
+```
+
+This will:
+- ✅ Install conventional commit dependencies
+- ✅ Set up commitlint and husky hooks
+- ✅ Add convenient npm scripts
+- ✅ Configure validation rules
+
+### 3. Bulk Format Legacy Commits
+
+```bash
+# Preview bulk formatting
+bumper bulk-format --dry-run
+
+# Format commits in a specific range
+bumper bulk-format --range HEAD~50..HEAD
+
+# Apply formatting (rewrites git history)
+bumper bulk-format
+```
+
+**⚠️ Warning:** Bulk formatting rewrites git history. Always backup your repository first!
+
+### 4. Gradual Migration Strategy
+
+For large projects, consider a gradual approach:
+
+1. **Start with new commits** using `bumper commit` or `bumper suggest`
+2. **Format recent commits** with `bumper bulk-format --range HEAD~20..HEAD`
+3. **Analyze progress** with `bumper analyze-legacy`
+4. **Repeat** until migration is complete
+
+### Migration Strategies
+
+Bumper automatically suggests the best migration strategy:
+
+- **Line in the Sand**: **Recommended** - Start fresh from a specific point (non-invasive)
+- **Bulk**: For projects with < 50 legacy commits (invasive)
+- **Hybrid**: For projects with mixed conventional/legacy commits (invasive)
+- **Gradual**: For large projects with > 100 legacy commits (invasive)
+
+### When to Use Each Approach
+
+| Approach | Best For | Risk Level | Team Coordination |
+|----------|----------|------------|-------------------|
+| **Line in the Sand** | Most projects | 🟢 None | None needed |
+| **Bulk** | Small projects, solo developers | 🟡 Medium | Minimal |
+| **Gradual** | Large projects, teams | 🟡 Medium | Moderate |
+| **Hybrid** | Mixed commit history | 🟡 Medium | Moderate |
+
 ## 📖 Usage Guide
 
 ### 🎯 Installation Methods
@@ -118,6 +238,12 @@ bumper commit
 bumper setup-github
 bumper check-release-readiness
 bumper auto-label <pr-number>
+
+# Legacy project migration
+bumper line-in-sand [--start-date <date>] [--start-commit <commit>] [--tag <tag>] [--force]
+bumper analyze-legacy [--range <range>] [--output <file>]
+bumper migrate-legacy [--force] [--start-date <date>]
+bumper bulk-format [--range <range>] [--dry-run]
 ```
 
 ### 📦 NPM Scripts (After Setup)
@@ -138,7 +264,11 @@ After running `bumper setup`, these convenience scripts are added to your packag
     "commit:create": "bumper commit",
     "github:setup": "bumper setup-github",
     "github:check": "bumper check-release-readiness",
-    "github:label": "bumper auto-label"
+    "github:label": "bumper auto-label",
+    "legacy:analyze": "bumper analyze-legacy",
+    "legacy:migrate": "bumper migrate-legacy",
+    "legacy:format": "bumper bulk-format",
+    "legacy:line-in-sand": "bumper line-in-sand"
   }
 }
 ```

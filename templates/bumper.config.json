@@ -31,5 +31,34 @@
       "📚 Documentation": ["documentation", "docs"]
     },
     "priorityLabels": ["high-priority", "critical", "security", "breaking-change"]
+  },
+  "legacySupport": {
+    "enabled": false,
+    "migrationStrategy": "gradual",
+    "customMappings": {
+      "add": "feat",
+      "new": "feat",
+      "create": "feat",
+      "implement": "feat",
+      "fix": "fix",
+      "bug": "fix",
+      "issue": "fix",
+      "problem": "fix",
+      "update": "chore",
+      "upgrade": "chore",
+      "bump": "chore",
+      "refactor": "refactor",
+      "clean": "refactor",
+      "improve": "refactor",
+      "test": "test",
+      "spec": "test",
+      "doc": "docs",
+      "readme": "docs",
+      "comment": "docs"
+    },
+    "validationMode": "warn",
+    "fallbackType": "chore",
+    "includeLegacyInChangelog": true,
+    "legacyCommitThreshold": 50
   }
-} 
+}

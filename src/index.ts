@@ -25,7 +25,16 @@ export {
   autoLabelPR,
   setupGitHubIntegration,
   generateEnhancedChangelog,
+  handleCheckReleaseReadiness,
+  handleAutoLabel,
 } from './githubIntegration.js';
+
+export {
+  migrateLegacyProject,
+  analyzeLegacyCommits,
+  bulkFormatCommits,
+  drawLineInSand,
+} from './legacySupport.js';
 
 // Types
 export interface Commit {

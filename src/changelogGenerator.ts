@@ -50,7 +50,26 @@ const parseCommitMessage = (message: string): Partial<Commit> => {
   const match = message.match(conventionalCommitRegex);
 
   if (!match) {
-    return { type: 'chore', subject: message };
+    // Try to infer type from legacy commit message
+    const words = message.toLowerCase().split(/\s+/);
+    const firstWord = words[0];
+    
+    let inferredType = 'chore';
+    if (['add', 'new', 'create', 'implement'].includes(firstWord || '')) {
+      inferredType = 'feat';
+    } else if (['fix', 'bug', 'issue', 'problem'].includes(firstWord || '')) {
+      inferredType = 'fix';
+    } else if (['update', 'upgrade', 'bump'].includes(firstWord || '')) {
+      inferredType = 'chore';
+    } else if (['refactor', 'clean', 'improve'].includes(firstWord || '')) {
+      inferredType = 'refactor';
+    } else if (['test', 'spec'].includes(firstWord || '')) {
+      inferredType = 'test';
+    } else if (['doc', 'readme', 'comment'].includes(firstWord || '')) {
+      inferredType = 'docs';
+    }
+    
+    return { type: inferredType, subject: message };
   }
 
   const [, commitType, commitScope, isBreaking, commitSubject] = match;
@@ -107,6 +126,54 @@ const getCommitsSinceLastTag = (): Commit[] => {
     // If no tags exist, get all commits
     return getCommitsFromGitLog();
   }
+};
+
+// Check if there's a line in the sand marker
+const getLineInSandPoint = (): string | null => {
+  try {
+    // Check for conventional commits start tag
+    const tags = execSync('git tag --list "conventional-commits-start-*"', {
+      encoding: 'utf8',
+    }).trim();
+    
+    if (tags) {
+      const tagLines = tags.split('\n').filter(tag => tag.trim());
+      if (tagLines.length > 0) {
+        // Get the most recent tag
+        const latestTag = tagLines[tagLines.length - 1];
+        return latestTag || null;
+      }
+    }
+    
+    // Check for marker file
+    if (fs.existsSync('.conventional-commits-start')) {
+      // Try to find the commit where this file was added
+      const markerCommit = execSync('git log --oneline --follow -- .conventional-commits-start | head -1', {
+        encoding: 'utf8',
+      }).trim();
+      
+      if (markerCommit) {
+        const commitHash = markerCommit.split(' ')[0];
+        return commitHash || null;
+      }
+    }
+    
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+// Get commits since line in the sand
+const getCommitsSinceLineInSand = (): Commit[] => {
+  const lineInSandPoint = getLineInSandPoint();
+  
+  if (lineInSandPoint) {
+    console.log(chalk.blue(`📅 Using line in the sand: ${lineInSandPoint}`));
+    return getCommitsFromGitLog(`${lineInSandPoint}..HEAD`);
+  }
+  
+  return getCommitsFromGitLog();
 };
 
 // Get section key for commit type
